@@ -1,69 +1,43 @@
 package frames
 
-var Matrix = DefaultFrameType(matrixFrames)
+import (
+	"fmt"
+	"math/rand"
+	"strings"
+	"time"
+)
 
-var matrixFrames = []string{
-`
-█ 0 █ 1 █ A █ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █
-0 █ 1 █ A █ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0
-█ A █ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █
-1 █ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A
-█ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A █ B
-0 █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A █ B █ 9 █
-█ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A █ B █ 9 █ X █ Y █ 7
-7 █ Z █ Q █ 0 █ 1 █ A █ B █ 9 █ X █ Y █ 7 █ 5 █
-█ 3 █ 0 █ 1 █ A █ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z
-1 █ A █ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █
-█ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A
-0 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A █ B █
-█ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A █ B █ 9 █ X
-7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A █ B █ 9 █ X █ Y █
-█ 3 █ Z █ Q █ 0 █ 1 █ A █ B █ 9 █ X █ Y █ 7 █ 5
-5 █ Q █ 0 █ 1 █ A █ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z
-█ 0 █ 1 █ A █ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q
-1 █ A █ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1
-█ B █ 9 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A
-0 █ X █ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A █ B █
-█ Y █ 7 █ 5 █ 3 █ Z █ Q █ 0 █ 1 █ A █ B █ 9 █ X
-`,
-`
-█ 1 █ 9 █ X █ A █ 7 █ 0 █ 3 █ B █ Q █ Y █ Z █ 5 █
-9 █ X █ A █ 7 █ 0 █ 3 █ B █ Q █ Y █ Z █ 5 █ 1 █ 9
-█ A █ 7 █ 0 █ 3 █ B █ Q █ Y █ Z █ 5 █ 1 █ 9 █ X █
-0 █ 3 █ B █ Q █ Y █ Z █ 5 █ 1 █ 9 █ X █ A █ 7 █ 0
-█ B █ Q █ Y █ Z █ 5 █ 1 █ 9 █ X █ A █ 7 █ 0 █ 3 █
-Q █ Y █ Z █ 5 █ 1 █ 9 █ X █ A █ 7 █ 0 █ 3 █ B █ Q
-█ Z █ 5 █ 1 █ 9 █ X █ A █ 7 █ 0 █ 3 █ B █ Q █ Y █
-5 █ 1 █ 9 █ X █ A █ 7 █ 0 █ 3 █ B █ Q █ Y █ Z █ 5
-█ 9 █ X █ A █ 7 █ 0 █ 3 █ B █ Q █ Y █ Z █ 5 █ 1 █
-1 █ A █ 7 █ 0 █ 3 █ B █ Q █ Y █ Z █ 5 █ 1 █ 9 █ X
-█ 7 █ 0 █ 3 █ B █ Q █ Y █ Z █ 5 █ 1 █ 9 █ X █ A █
-0 █ 3 █ B █ Q █ Y █ Z █ 5 █ 1 █ 9 █ X █ A █ 7 █ 0
-█ 3 █ B █ Q █ Y █ Z █ 5 █ 1 █ 9 █ X █ A █ 7 █ 0 █
-B █ Q █ Y █ Z █ 5 █ 1 █ 9 █ X █ A █ 7 █ 0 █ 3 █ B
-█ Q █ Y █ Z █ 5 █ 1 █ 9 █ X █ A █ 7 █ 0 █ 3 █ B █
-Y █ Z █ 5 █ 1 █ 9 █ X █ A █ 7 █ 0 █ 3 █ B █ Q █ Y
-█ Z █ 5 █ 1 █ 9 █ X █ A █ 7 █ 0 █ 3 █ B █ Q █ Y █
-5 █ 1 █ 9 █ X █ A █ 7 █ 0 █ 3 █ B █ Q █ Y █ Z █ 5
-1 █ 9 █ X █ A █ 7 █ 0 █ 3 █ B █ Q █ Y █ Z █ 5 █ 1
-█ X █ A █ 7 █ 0 █ 3 █ B █ Q █ Y █ Z █ 5 █ 1 █ 9 █
-`,
-`
-█ 9 █ 0 █ B █ 7 █ X █ Q █ 1 █ 3 █ Y █ 5 █ Z █ A █
-0 █ B █ 7 █ X █ Q █ 1 █ 3 █ Y █ 5 █ Z █ A █ 9 █ 0
-█ B █ 7 █ X █ Q █ 1 █ 3 █ Y █ 5 █ Z █ A █ 9 █ 0 █
-7 █ X █ Q █ 1 █ 3 █ Y █ 5 █ Z █ A █ 9 █ 0 █ B █ 7
-█ Q █ 1 █ 3 █ Y █ 5 █ Z █ A █ 9 █ 0 █ B █ 7 █ X █
-1 █ 3 █ Y █ 5 █ Z █ A █ 9 █ 0 █ B █ 7 █ X █ Q █ 1
-█ 3 █ Y █ 5 █ Z █ A █ 9 █ 0 █ B █ 7 █ X █ Q █ 3 █
-Y █ 5 █ Z █ A █ 9 █ 0 █ B █ 7 █ X █ Q █ 3 █ 5 █
-█ Z █ A █ 9 █ 0 █ B █ 7 █ X █ Q █ 3 █ 5 █ Y █ 9 █
-A █ 9 █ 0 █ B █ 7 █ X █ Q █ 3 █ 5 █ Y █ 9 █ Z █ A
-█ 9 █ 0 █ B █ 7 █ X █ Q █ 3 █ 5 █ Y █ 9 █ Z █ A █
-0 █ B █ 7 █ X █ Q █ 1 █ 3 █ Y █ 5 █ Z █ A █ 9 █ 0
-█ B █ 7 █ X █ Q █ 1 █ 3 █ Y █ 5 █ Z █ A █ 9 █ 0 █
-7 █ X █ Q █ 1 █ 3 █ Y █ 5 █ Z █ A █ 9 █ 0 █ B █ 7
-█ Q █ 1 █ 3 █ Y █ 5 █ Z █ A █ 9 █ 0 █ B █ 7 █ X █
-1 █ 3 █ Y █ 5 █ Z █ A █ 9 █ 0 █ B █ 7 █ X █ 1 █
-`,
+// Matrix animation generator
+var Matrix = DefaultFrameType(generateMatrixFrames())
+
+func generateMatrixFrames() []string {
+	rand.Seed(time.Now().UnixNano())
+	frames := []string{}
+
+	ROWS, COLS := 24, 80       // default size; ascii.live will stretch
+	numFrames := 30             // smooth animation
+
+	for f := 0; f < numFrames; f++ {
+		lines := make([]string, ROWS)
+		for r := 0; r < ROWS; r++ {
+			line := ""
+			for c := 0; c < COLS; c++ {
+				if rand.Float32() < 0.1 {
+					// 10% chance of character
+					line += string(randomChar())
+				} else {
+					line += " "
+				}
+			}
+			lines[r] = line
+		}
+		frames = append(frames, strings.Join(lines, "\n"))
+	}
+
+	return frames
+}
+
+func randomChar() rune {
+	chars := "01ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%^&*"
+	return rune(chars[rand.Intn(len(chars))])
 }

@@ -1,0 +1,37 @@
+import random
+import time
+import os
+import sys
+
+# Terminal size (change if needed)
+ROWS, COLS = 24, 80
+
+# Initialize drops for each column
+drops = [random.randint(0, ROWS) for _ in range(COLS)]
+
+# Characters to use
+chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%^&*"
+
+try:
+    while True:
+        # Clear screen
+        print("\033[H\033[J", end="")
+
+        for i in range(ROWS):
+            line = ""
+            for j in range(COLS):
+                if i >= drops[j] - 5 and i <= drops[j]:
+                    # Characters within the "trail" length
+                    line += random.choice(chars)
+                else:
+                    line += " "
+            print(line)
+
+        # Move each drop down
+        drops = [(d + 1 if random.random() > 0.02 else 0) for d in drops]
+
+        # Control speed
+        time.sleep(0.05)
+
+except KeyboardInterrupt:
+    sys.exit()

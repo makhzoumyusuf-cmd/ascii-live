@@ -4,22 +4,24 @@ import (
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/buger/goterm" // only for terminal size detection
 )
 
 // Matrix animation
 var Matrix = DefaultFrameType(generateFrames())
 
-var ROWS, COLS = 40, 120
-
 type drop struct {
-	pos    int     // current head row
-	length int     // length of the trail
-	speed  float64 // chance to move this frame
+	pos    int
+	length int
+	speed  float64
 }
 
-// generateFrames returns a big slice of frames to make the animation smooth
+// generateFrames dynamically generates frames using terminal size
 func generateFrames() []string {
 	rand.Seed(time.Now().UnixNano())
+
+	ROWS, COLS := goterm.Height(), goterm.Width() // get terminal size dynamically
 	numFrames := 500
 
 	// initialize drops per column
@@ -27,8 +29,8 @@ func generateFrames() []string {
 	for i := range drops {
 		drops[i] = drop{
 			pos:    rand.Intn(ROWS),
-			length: 6 + rand.Intn(6),       // trail length 6-11
-			speed:  0.9 + rand.Float64()*0.1, // chance to move per frame
+			length: 6 + rand.Intn(6),      // trail length 6-11
+			speed:  0.8 + rand.Float64()*0.2, // chance to move per frame
 		}
 	}
 
@@ -51,13 +53,13 @@ func generateFrames() []string {
 
 		frames[f] = strings.Join(lines, "\n")
 
-		// move each drop down according to its speed
+		// move each drop down
 		for c := range drops {
 			if rand.Float64() < drops[c].speed {
 				drops[c].pos++
 				if drops[c].pos >= ROWS+drops[c].length {
 					drops[c].pos = 0
-					drops[c].length = 6 + rand.Intn(6) // random new trail length
+					drops[c].length = 6 + rand.Intn(6)
 				}
 			}
 		}

@@ -6,17 +6,30 @@ import (
 	"time"
 )
 
-var Matrix = DefaultFrameType(generateMatrixFrames())
+// Matrix animation
+var Matrix = DefaultFrameType(generateFrames())
 
 var ROWS, COLS = 40, 120
 
-func generateMatrixFrames() []string {
-	rand.Seed(time.Now().UnixNano())
-	numFrames := 500 // lots of frames to avoid visible reset
+type drop struct {
+	pos    int     // current head row
+	length int     // length of the trail
+	speed  float64 // chance to move this frame
+}
 
-	drops := make([]int, COLS)
-	for i := 0; i < COLS; i++ {
-		drops[i] = rand.Intn(ROWS)
+// generateFrames returns a big slice of frames to make the animation smooth
+func generateFrames() []string {
+	rand.Seed(time.Now().UnixNano())
+	numFrames := 500
+
+	// initialize drops per column
+	drops := make([]drop, COLS)
+	for i := range drops {
+		drops[i] = drop{
+			pos:    rand.Intn(ROWS),
+			length: 6 + rand.Intn(6),       // trail length 6-11
+			speed:  0.9 + rand.Float64()*0.1, // chance to move per frame
+		}
 	}
 
 	frames := make([]string, numFrames)
@@ -26,8 +39,8 @@ func generateMatrixFrames() []string {
 		for r := 0; r < ROWS; r++ {
 			line := ""
 			for c := 0; c < COLS; c++ {
-				trailLength := 6
-				if r >= drops[c]-trailLength && r <= drops[c] {
+				d := drops[c]
+				if r <= d.pos && r > d.pos-d.length {
 					line += string(randomChar())
 				} else {
 					line += " "
@@ -35,17 +48,17 @@ func generateMatrixFrames() []string {
 			}
 			lines[r] = line
 		}
+
 		frames[f] = strings.Join(lines, "\n")
 
-		// Move drops down
-		for c := 0; c < COLS; c++ {
-			if rand.Float32() > 0.02 {
-				drops[c]++
-				if drops[c] >= ROWS {
-					drops[c] = 0
+		// move each drop down according to its speed
+		for c := range drops {
+			if rand.Float64() < drops[c].speed {
+				drops[c].pos++
+				if drops[c].pos >= ROWS+drops[c].length {
+					drops[c].pos = 0
+					drops[c].length = 6 + rand.Intn(6) // random new trail length
 				}
-			} else {
-				drops[c] = 0
 			}
 		}
 	}
